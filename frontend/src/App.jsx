@@ -1,8 +1,11 @@
+import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
+
 function App() {
   return (
-    <>
-      <div className="text-blue-500">initial commit</div>
-    </>
+    <div>
+      <Home />
+    </div>
   );
 }
 

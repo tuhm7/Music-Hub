@@ -8,6 +8,7 @@ var cookieParser = require("cookie-parser");
 const store = new session.MemoryStore();
 const cors = require("cors");
 const randomstring = require("randomstring");
+const transferRoutes = require("./routes/Transfer");
 require("dotenv").config();
 
 var client_id = process.env.CLIENT_ID;
@@ -30,14 +31,17 @@ app.use(
     origin: "*",
   })
 );
+app.use("/transfer", transferRoutes);
 // app.use((req, res, next) => {
 //   console.log(store);
 //   next();
 // });
 
 app.get("/", (req, res) => {
-  // getApplePlaylist("https://music.apple.com/us/artist/my-playlist/1253909570");
-  res.json({ data: "testing" });
+  getApplePlaylist("https://music.apple.com/us/artist/my-playlist/1253909570")
+    .then((res) => res)
+    .then((data) => console.log(data));
+  res.json({ testing: "testing" });
 });
 
 app.get("/login", function (req, res) {
@@ -107,7 +111,7 @@ app.get("/callback", function (req, res) {
         //   }
         //   console.log(data);
         // });
-        res.redirect("http://localhost:5173/");
+        res.redirect("http://localhost:5173/transfer");
       } else {
         res.redirect(
           "/#" +
@@ -140,7 +144,11 @@ async function getApplePlaylist(url) {
     .substring(0, script.indexOf("import.meta.url"))
     .trim();
   object = JSON.parse(script_trimmed);
-  console.log(object["tracks"]);
+  var tracksList = [];
+  object["tracks"].forEach((track) => {
+    tracksList.push(track["name"]);
+  });
+  return tracksList;
 }
 app.listen(process.env.PORT, (error) => {
   if (!error) {

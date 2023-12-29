@@ -8,6 +8,7 @@ var cookieParser = require("cookie-parser");
 const store = new session.MemoryStore();
 const cors = require("cors");
 const randomstring = require("randomstring");
+const transferRoutes = require("./routes/Transfer");
 require("dotenv").config();
 
 var client_id = process.env.CLIENT_ID;
@@ -30,14 +31,20 @@ app.use(
     origin: "*",
   })
 );
+app.use("/transfer", transferRoutes);
 // app.use((req, res, next) => {
 //   console.log(store);
 //   next();
 // });
 
 app.get("/", (req, res) => {
-  // getApplePlaylist("https://music.apple.com/us/artist/my-playlist/1253909570");
-  res.json({ data: "testing" });
+  getApplePlaylist(
+    "https://music.apple.com/us/playlist/top-100-global/pl.d25f5d1181894928af76c85c967f8f31"
+  );
+  // getApplePlaylist(
+  //   "https://music.apple.com/us/playlist/top-100-global/pl.d25f5d1181894928af76c85c967f8f31"
+  // );
+  res.json({ testing: "testing" });
 });
 
 app.get("/login", function (req, res) {
@@ -107,7 +114,7 @@ app.get("/callback", function (req, res) {
         //   }
         //   console.log(data);
         // });
-        res.redirect("http://localhost:5173/");
+        res.redirect("http://localhost:5173/transfer");
       } else {
         res.redirect(
           "/#" +
@@ -135,12 +142,17 @@ async function getApplePlaylist(url) {
   const response = await axios.get(url);
   data = response.data;
   const $ = await cheerio.load(data);
-  script = $("script").text();
-  script_trimmed = script
-    .substring(0, script.indexOf("import.meta.url"))
-    .trim();
-  object = JSON.parse(script_trimmed);
-  console.log(object["tracks"]);
+  script = $("#serialized-server-data").text();
+  object = JSON.parse(script);
+  object = object[0]["data"]["seoData"]["ogSongs"];
+  var tracksList = [];
+  object.forEach((song) => {
+    tracksList.push({
+      id: song["id"],
+      title: song["attributes"]["name"],
+      artist: song["attributes"]["artistName"],
+    });
+  });
 }
 app.listen(process.env.PORT, (error) => {
   if (!error) {

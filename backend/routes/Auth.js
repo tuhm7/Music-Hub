@@ -1,31 +1,30 @@
 const express = require("express");
-const axios = require("axios");
-const cheerio = require("cheerio");
+const router = express.Router();
+const randomstring = require("randomstring");
+const querystring = require("querystring");
 const request = require("request");
-var cookieParser = require("cookie-parser");
-const cors = require("cors");
-const transferRoutes = require("./routes/Transfer");
-const spotifyRoutes = require("./routes/Spotify");
-const authRoutes = require("./routes/Auth");
+const session = require("express-session");
+require("dotenv").config();
+const store = new session.MemoryStore();
+var stateKey = "spotify_auth_state";
+var client_id = process.env.CLIENT_ID;
+var client_secret = process.env.CLIENT_SECRET;
+var stateKey = "spotify_auth_state";
 
-const app = express();
-app.use(cookieParser());
-app.use(
-  cors({
-    origin: "*",
+router.use(
+  session({
+    secret: "secret key",
+    cookie: { maxAge: 500000 },
+    saveUninitialized: false,
+    store,
   })
 );
 
-// routes
-app.use("/auth", authRoutes);
-app.use("/transfer", transferRoutes);
-app.use("/spotify", spotifyRoutes);
-
-app.get("/", (req, res) => {
-  res.json({ testing: "testing" });
+router.get("/", (req, res) => {
+  res.json({ test: "auth" });
 });
 
-app.get("/login", function (req, res) {
+router.get("/login", function (req, res) {
   var state = randomstring.generate(16);
   var scope = "user-read-private user-read-email";
   res.cookie(stateKey, state);
@@ -41,7 +40,7 @@ app.get("/login", function (req, res) {
   );
 });
 
-app.get("/callback", function (req, res) {
+router.get("/callback", function (req, res) {
   var code = req.query.code || null;
   var state = req.query.state || null;
   var storedState = req.cookies ? req.cookies[stateKey] : null;
@@ -105,20 +104,4 @@ app.get("/callback", function (req, res) {
   }
 });
 
-async function getProfileData(access_token) {
-  var options = {
-    headers: { Authorization: "Bearer " + access_token },
-    json: true,
-  };
-
-  await fetch("https://api.spotify.com/v1/me", options)
-    .then((res) => res.json())
-    .then((data) => data["display_name"]);
-}
-app.listen(process.env.PORT, (error) => {
-  if (!error) {
-    console.log("Server is running on port " + process.env.PORT);
-  } else {
-    console.log("Error occurred", error);
-  }
-});
+module.exports = router;

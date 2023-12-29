@@ -38,9 +38,12 @@ app.use("/transfer", transferRoutes);
 // });
 
 app.get("/", (req, res) => {
-  getApplePlaylist("https://music.apple.com/us/artist/my-playlist/1253909570")
-    .then((res) => res)
-    .then((data) => console.log(data));
+  getApplePlaylist(
+    "https://music.apple.com/us/playlist/top-100-global/pl.d25f5d1181894928af76c85c967f8f31"
+  );
+  // getApplePlaylist(
+  //   "https://music.apple.com/us/playlist/top-100-global/pl.d25f5d1181894928af76c85c967f8f31"
+  // );
   res.json({ testing: "testing" });
 });
 
@@ -139,16 +142,17 @@ async function getApplePlaylist(url) {
   const response = await axios.get(url);
   data = response.data;
   const $ = await cheerio.load(data);
-  script = $("script").text();
-  script_trimmed = script
-    .substring(0, script.indexOf("import.meta.url"))
-    .trim();
-  object = JSON.parse(script_trimmed);
+  script = $("#serialized-server-data").text();
+  object = JSON.parse(script);
+  object = object[0]["data"]["seoData"]["ogSongs"];
   var tracksList = [];
-  object["tracks"].forEach((track) => {
-    tracksList.push(track["name"]);
+  object.forEach((song) => {
+    tracksList.push({
+      id: song["id"],
+      title: song["attributes"]["name"],
+      artist: song["attributes"]["artistName"],
+    });
   });
-  return tracksList;
 }
 app.listen(process.env.PORT, (error) => {
   if (!error) {

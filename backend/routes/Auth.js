@@ -3,22 +3,11 @@ const router = express.Router();
 const randomstring = require("randomstring");
 const querystring = require("querystring");
 const request = require("request");
-const session = require("express-session");
 require("dotenv").config();
-const store = new session.MemoryStore();
+
 var stateKey = "spotify_auth_state";
 var client_id = process.env.CLIENT_ID;
 var client_secret = process.env.CLIENT_SECRET;
-var stateKey = "spotify_auth_state";
-
-router.use(
-  session({
-    secret: "secret key",
-    cookie: { maxAge: 500000 },
-    saveUninitialized: false,
-    store,
-  })
-);
 
 router.get("/", (req, res) => {
   res.json({ test: "auth" });
@@ -74,7 +63,7 @@ router.get("/callback", function (req, res) {
       if (!error && response.statusCode === 200) {
         var access_token = body.access_token;
         var refresh_token = body.refresh_token;
-
+        console.log(access_token);
         var options = {
           headers: { Authorization: "Bearer " + access_token },
           json: true,
@@ -83,14 +72,15 @@ router.get("/callback", function (req, res) {
         if (!req.session.authenticated) {
           req.session.authenticated = true;
           req.session.token = access_token;
-          res.cookie("session_id", req.sessionID);
         }
+
         // store.get(req.sessionID, function (err, data) {
         //   if (data) {
         //     console.log(data["token"]);
         //   }
         //   console.log(data);
         // });
+        redisClient.set(req.sessionID, refresh_token);
         res.redirect("http://localhost:5173/transfer");
       } else {
         res.redirect(

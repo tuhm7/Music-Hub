@@ -1,32 +1,58 @@
 import React, { useState, useEffect } from "react";
+import Cookies from "js-cookie";
 
 const Transfer = () => {
   const [url, setUrl] = useState("");
   const [playlist, setPlaylist] = useState(null);
+  var id = "";
+
+  // useEffect(() => {
+  //   id = Cookies.get("session_id");
+  //   console.log(id);
+  // });
+
   const handleChange = (e) => {
     setUrl(e.target.value);
-    console.log(url);
   };
-  // useEffect(() => {
-  // console.log(playlist["playlist"]);
-  // });
-  const sendUrl = (e) => {
+
+  const sendUrl = async (e) => {
+    getPlaylist();
+  };
+
+  const getPlaylist = () => {
     fetch(
       "http://localhost:4000/transfer/apple?" +
         new URLSearchParams({
           appleurl: url,
-        })
+        }),
+      { credentials: "include" }
     )
       .then((res) => res.json())
       .then((data) => {
         setPlaylist(data);
-        console.log(playlist);
       });
   };
+
+  const getToken = () => {
+    fetch("http://localhost:4000/spotify/songs", {
+      method: "POST",
+      mode: "cors",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(playlist),
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+  };
+
   useEffect(() => {
-    console.log(playlist);
+    if (playlist) {
+      getToken();
+    }
   }, playlist);
-  var i = 0;
+
   return (
     <div>
       <div className="ml-8 mt-8 text-3xl text-pink">

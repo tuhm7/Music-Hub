@@ -7,10 +7,18 @@ const spotifyRoutes = require("./routes/Spotify");
 const authRoutes = require("./routes/Auth");
 require("./helpers/init_redis");
 const session = require("./middleware/session");
+const { redisClient } = require("./helpers/init_redis");
 
 const app = express();
+app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: "*" }));
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+    methods: ["GET", "POST"],
+  })
+);
 app.use(session);
 
 // routes

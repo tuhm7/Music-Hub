@@ -6,4 +6,5 @@ router.get("/", (req, res) => {
   res.json({ test: "spotify" });
 });
 
+router.post("/songs", spotifyController.createPlaylist);
 module.exports = router;

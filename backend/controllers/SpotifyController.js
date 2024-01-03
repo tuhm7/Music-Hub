@@ -33,6 +33,7 @@ async function getSong(title, access_token) {
         title: songData["name"],
         artist: songData["artists"][0]["name"],
         uri: songData["uri"],
+        albumURL: songData["album"]["images"][0]["url"],
       };
     });
 }

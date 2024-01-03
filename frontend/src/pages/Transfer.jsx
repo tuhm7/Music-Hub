@@ -4,7 +4,6 @@ import Cookies from "js-cookie";
 const Transfer = () => {
   const [url, setUrl] = useState("");
   const [playlist, setPlaylist] = useState(null);
-  var id = "";
 
   // useEffect(() => {
   //   id = Cookies.get("session_id");

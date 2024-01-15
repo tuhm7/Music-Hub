@@ -9,6 +9,9 @@ export default {
         beige: "#FFD8D1",
         pink: "#FA9EBC",
       },
+      fontFamily: {
+        primary: "Blackout",
+      },
     },
   },
   plugins: [],

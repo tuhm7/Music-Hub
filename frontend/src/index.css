@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: Blackout;
+  src: url("Black_Han_Sans/BlackHanSans-Regular.ttf") format("opentype");
+}

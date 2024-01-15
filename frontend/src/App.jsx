@@ -5,7 +5,7 @@ import Transfer from "./pages/Transfer";
 
 function App() {
   return (
-    <div>
+    <div className="font-primary">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/transfer" element={<Transfer />} />

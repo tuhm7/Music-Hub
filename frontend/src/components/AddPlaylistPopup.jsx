@@ -2,10 +2,15 @@ import React from "react";
 import { useState, useEffect } from "react";
 import example1 from "../images/appleExample1.png";
 import example2 from "../images/appleExample2.png";
-const AddPlaylistPopup = ({ updateSpotify }) => {
+const AddPlaylistPopup = ({ updateSpotify, handlePopup }) => {
   const [url, setUrl] = useState("");
   const [playlist, setPlaylist] = useState(null);
-
+  useEffect(() => {
+    if (playlist) {
+      handlePopup(false);
+      getSpotifyObject();
+    }
+  }, playlist);
   const handleChange = (e) => {
     setUrl(e.target.value);
   };
@@ -28,13 +33,6 @@ const AddPlaylistPopup = ({ updateSpotify }) => {
       });
   };
 
-  useEffect(() => {
-    if (playlist) {
-      console.log(playlist);
-      getSpotifyObject();
-    }
-  }, playlist);
-
   const getSpotifyObject = () => {
     fetch("http://localhost:4000/spotify/songs", {
       method: "POST",
@@ -46,11 +44,14 @@ const AddPlaylistPopup = ({ updateSpotify }) => {
       body: JSON.stringify(playlist),
     })
       .then((res) => res.json())
-      .then((data) => updateSpotify(data));
+      .then((data) => {
+        console.log(data);
+        updateSpotify(data);
+      });
   };
 
   return (
-    <div className="flex justify-center py-4 border w-3/4 bg-slate-600 absolute">
+    <div className="flex justify-center py-4 border w-3/4 bg-slate-600 absolute rounded">
       <div>
         <div className="flex items-center justify-center flex-col space-y-3">
           <div className="px-3">

@@ -3,13 +3,14 @@ const querystring = require("querystring");
 const request = require("request");
 require("dotenv").config();
 
-var stateKey = "spotify_auth_state";
-var client_id = process.env.CLIENT_ID;
-var client_secret = process.env.CLIENT_SECRET;
+const stateKey = "spotify_auth_state";
+const client_id = process.env.CLIENT_ID;
+const client_secret = process.env.CLIENT_SECRET;
 
 function login(req, res) {
-  var state = randomstring.generate(16);
-  var scope = "user-read-private user-read-email";
+  const state = randomstring.generate(16);
+  const scope =
+    "user-read-private user-read-email playlist-modify-private playlist-modify-public";
   res.cookie(stateKey, state);
   res.redirect(
     "https://accounts.spotify.com/authorize?" +
@@ -24,9 +25,9 @@ function login(req, res) {
 }
 
 function callback(req, res) {
-  var code = req.query.code || null;
-  var state = req.query.state || null;
-  var storedState = req.cookies ? req.cookies[stateKey] : null;
+  const code = req.query.code || null;
+  const state = req.query.state || null;
+  const storedState = req.cookies ? req.cookies[stateKey] : null;
 
   if (state === null || state !== storedState) {
     res.redirect(
@@ -37,7 +38,7 @@ function callback(req, res) {
     );
   } else {
     res.clearCookie(stateKey);
-    var authOptions = {
+    const authOptions = {
       url: "https://accounts.spotify.com/api/token",
       form: {
         code: code,
@@ -55,10 +56,10 @@ function callback(req, res) {
 
     request.post(authOptions, function (error, response, body) {
       if (!error && response.statusCode === 200) {
-        var access_token = body.access_token;
+        const access_token = body.access_token;
         console.log("LEGIT ACCESS TOKEN", access_token);
-        var refresh_token = body.refresh_token;
-        var options = {
+        const refresh_token = body.refresh_token;
+        const options = {
           headers: { Authorization: "Bearer " + access_token },
           json: true,
         };
@@ -66,6 +67,14 @@ function callback(req, res) {
         if (!req.session.authenticated) {
           req.session.authenticated = true;
           req.session.token = access_token;
+
+          //id
+          fetch("https://api.spotify.com/v1/me", options)
+            .then((res) => res.json())
+            .then((data) => {
+              req.session.spotifyID = data["id"];
+              req.session.save();
+            });
         }
         res.redirect("http://localhost:5173/transfer");
       } else {
@@ -79,6 +88,7 @@ function callback(req, res) {
     });
   }
 }
+
 module.exports = {
   login,
   callback,

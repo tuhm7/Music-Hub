@@ -2,7 +2,7 @@ const querystring = require("querystring");
 const { redisClient } = require("../helpers/init_redis");
 
 function createPlaylist(req, res) {
-  playlist = req.body["playlist"].slice(0, 10);
+  playlist = req.body["tracks"];
   redisClient.get("sess:" + req.sessionID).then((resp) => {
     resp = JSON.parse(resp);
     const token = resp["token"];
@@ -16,7 +16,7 @@ function createPlaylist(req, res) {
 
 async function getSong(title, access_token) {
   spotifyPlaylist = [];
-  var options = {
+  const options = {
     headers: { Authorization: "Bearer " + access_token },
     json: true,
   };
@@ -38,4 +38,52 @@ async function getSong(title, access_token) {
     });
 }
 
-module.exports = { createPlaylist };
+function createEmptySpotifyPlaylist(req, res) {
+  playlist = req.body["spotifyObject"];
+  title = req.query.title;
+  const endpoint =
+    "https://api.spotify.com/v1/users/" + req.session.spotifyID + "/playlists";
+  const options = {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + req.session.token,
+      "Content-Type": "application/json",
+    },
+    json: true,
+    body: JSON.stringify({
+      name: title,
+      description: "This playlist was transferred from Apple Music by musichub",
+      public: false,
+    }),
+  };
+  fetch(endpoint, options)
+    .then((res) => res.json())
+    .then((data) =>
+      addSongsToPlaylist(req.session.token, data["id"], playlist)
+    );
+  res.status(200);
+}
+
+function addSongsToPlaylist(token, playlistURI, songsList) {
+  const spotifyURI = songsList.map((songObject) =>
+    songObject["uri"].replace("playlist", "track")
+  );
+  const endpoint =
+    "https://api.spotify.com/v1/playlists/" + playlistURI + "/tracks";
+  const options = {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+    },
+    json: true,
+    body: JSON.stringify({
+      uris: spotifyURI,
+      position: 0,
+    }),
+  };
+
+  fetch(endpoint, options);
+}
+
+module.exports = { createPlaylist, createEmptySpotifyPlaylist };

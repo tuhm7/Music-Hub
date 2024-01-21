@@ -12,7 +12,6 @@ function createPlaylist(req, res) {
     const spotifyPlaylist = Promise.all(promises);
     spotifyPlaylist.then((data) => res.send(data));
   });
-  createEmptySpotifyPlaylist(req.session.spotifyID, req.session.token);
 }
 
 async function getSong(title, access_token) {
@@ -39,13 +38,14 @@ async function getSong(title, access_token) {
     });
 }
 
-function createEmptySpotifyPlaylist(user_id, access_token) {
-  console.log(user_id);
-  endpoint = "https://api.spotify.com/v1/users/" + user_id + "/playlists";
+function createEmptySpotifyPlaylist(req, res) {
+  playlist = req.body["spotifyObject"];
+  endpoint =
+    "https://api.spotify.com/v1/users/" + req.session.spotifyID + "/playlists";
   const options = {
     method: "POST",
     headers: {
-      Authorization: "Bearer " + access_token,
+      Authorization: "Bearer " + req.session.token,
       "Content-Type": "application/json",
     },
     json: true,
@@ -62,4 +62,4 @@ function createEmptySpotifyPlaylist(user_id, access_token) {
 
 function addSongsToPlaylist(playlistURI, songsList) {}
 
-module.exports = { createPlaylist };
+module.exports = { createPlaylist, createEmptySpotifyPlaylist };

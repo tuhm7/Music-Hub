@@ -7,4 +7,7 @@ router.get("/", (req, res) => {
 });
 
 router.post("/songs", spotifyController.createPlaylist);
+
+router.post("/spotify-playlist", spotifyController.createEmptySpotifyPlaylist);
+
 module.exports = router;

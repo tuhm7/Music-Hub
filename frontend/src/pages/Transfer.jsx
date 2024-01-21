@@ -3,6 +3,7 @@ import SongCard from "../components/SongCard";
 import EmptyList from "../components/EmptyList";
 import AddPlaylistPopup from "../components/AddPlaylistPopup";
 import Instructions from "../components/Instructions";
+import CreatePlaylistButton from "../components/CreatePlaylistButton";
 
 const Transfer = () => {
   const [spotifyPlaylist, setSpotifyPlaylist] = useState(null);
@@ -43,9 +44,7 @@ const Transfer = () => {
                 </li>
               ))}
             </ul>
-            <button className="mt-3 border py-2 px-4 rounded-3xl hover:bg-pink">
-              Convert
-            </button>
+            <CreatePlaylistButton playlist={spotifyPlaylist} />
           </div>
         ) : (
           <>

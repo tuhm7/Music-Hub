@@ -33,7 +33,7 @@ const Transfer = () => {
               {spotifyPlaylist.map((songData, i) => (
                 <li
                   className="text-white"
-                  key={songData.id}
+                  key={i}
                   onClick={() => {
                     setSpotifyPlaylist(
                       spotifyPlaylist.filter((item) => item !== songData)

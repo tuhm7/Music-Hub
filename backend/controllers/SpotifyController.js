@@ -40,7 +40,7 @@ async function getSong(title, access_token) {
 
 function createEmptySpotifyPlaylist(req, res) {
   playlist = req.body["spotifyObject"];
-  endpoint =
+  const endpoint =
     "https://api.spotify.com/v1/users/" + req.session.spotifyID + "/playlists";
   const options = {
     method: "POST",
@@ -57,9 +57,32 @@ function createEmptySpotifyPlaylist(req, res) {
   };
   fetch(endpoint, options)
     .then((res) => res.json())
-    .then((data) => console.log(data));
+    .then((data) =>
+      addSongsToPlaylist(req.session.token, data["id"], playlist)
+    );
+  res.status(200);
 }
 
-function addSongsToPlaylist(playlistURI, songsList) {}
+function addSongsToPlaylist(token, playlistURI, songsList) {
+  const spotifyURI = songsList.map((songObject) =>
+    songObject["uri"].replace("playlist", "track")
+  );
+  const endpoint =
+    "https://api.spotify.com/v1/playlists/" + playlistURI + "/tracks";
+  const options = {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+    },
+    json: true,
+    body: JSON.stringify({
+      uris: spotifyURI,
+      position: 0,
+    }),
+  };
+
+  fetch(endpoint, options);
+}
 
 module.exports = { createPlaylist, createEmptySpotifyPlaylist };

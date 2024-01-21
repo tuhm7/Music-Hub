@@ -1,16 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SongCard from "../components/SongCard";
 import EmptyList from "../components/EmptyList";
 import AddPlaylistPopup from "../components/AddPlaylistPopup";
 import Instructions from "../components/Instructions";
-import CreatePlaylistButton from "../components/CreatePlaylistButton";
+import CreateSpotifyPlaylistButton from "../components/CreateSpotifyPlaylistButton";
 
 const Transfer = () => {
-  const [spotifyPlaylist, setSpotifyPlaylist] = useState(null);
+  const [spotifyPlaylistTracks, setSpotifyPlaylistTracks] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
+  const [spotifyPlaylistTitle, setSpotifyPlaylistTitle] = useState(null);
 
-  function handleSpotifyState(playlist) {
-    setSpotifyPlaylist(playlist);
+  function handleSpotifyTrackState(playlist) {
+    setSpotifyPlaylistTracks(playlist);
+  }
+
+  function handleSpotifyTitleState(title) {
+    setSpotifyPlaylistTitle(title);
   }
 
   return (
@@ -20,23 +25,29 @@ const Transfer = () => {
       {showPopup && (
         <div className="flex justify-center">
           <AddPlaylistPopup
-            updateSpotify={handleSpotifyState}
+            updateSpotifyTracks={handleSpotifyTrackState}
             handlePopup={setShowPopup}
+            updateSpotifyTitle={handleSpotifyTitleState}
           />
         </div>
       )}
       <div className="my-20 flex flex-col space-y-4">
-        {spotifyPlaylist ? (
+        {spotifyPlaylistTracks ? (
           <div className="flex items-center justify-center flex-col space-x-5">
             <Instructions />
+            {spotifyPlaylistTitle && (
+              <div className="text-3xl text-pink">
+                {spotifyPlaylistTitle["title"]}
+              </div>
+            )}
             <ul className="text-white border h-96 overflow-auto w-fit px-4 rounded-xl">
-              {spotifyPlaylist.map((songData, i) => (
+              {spotifyPlaylistTracks.map((songData, i) => (
                 <li
                   className="text-white"
                   key={i}
                   onClick={() => {
-                    setSpotifyPlaylist(
-                      spotifyPlaylist.filter((item) => item !== songData)
+                    setSpotifyPlaylistTracks(
+                      spotifyPlaylistTracks.filter((item) => item !== songData)
                     );
                   }}
                 >
@@ -44,7 +55,10 @@ const Transfer = () => {
                 </li>
               ))}
             </ul>
-            <CreatePlaylistButton playlist={spotifyPlaylist} />
+            <CreateSpotifyPlaylistButton
+              tracks={spotifyPlaylistTracks}
+              title={spotifyPlaylistTitle["title"]}
+            />
           </div>
         ) : (
           <>

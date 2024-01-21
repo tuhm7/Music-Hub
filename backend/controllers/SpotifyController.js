@@ -2,7 +2,7 @@ const querystring = require("querystring");
 const { redisClient } = require("../helpers/init_redis");
 
 function createPlaylist(req, res) {
-  playlist = req.body["playlist"];
+  playlist = req.body["tracks"];
   redisClient.get("sess:" + req.sessionID).then((resp) => {
     resp = JSON.parse(resp);
     const token = resp["token"];
@@ -40,6 +40,7 @@ async function getSong(title, access_token) {
 
 function createEmptySpotifyPlaylist(req, res) {
   playlist = req.body["spotifyObject"];
+  title = req.query.title;
   const endpoint =
     "https://api.spotify.com/v1/users/" + req.session.spotifyID + "/playlists";
   const options = {
@@ -50,8 +51,8 @@ function createEmptySpotifyPlaylist(req, res) {
     },
     json: true,
     body: JSON.stringify({
-      name: "playlist",
-      description: "testing",
+      name: title,
+      description: "This playlist was transferred from Apple Music by musichub",
       public: false,
     }),
   };

@@ -3,6 +3,7 @@ import { useState } from "react";
 import Home from "./pages/Home";
 import Transfer from "./pages/Transfer";
 import Playlist from "./pages/Playlist";
+import Confirmation from "./pages/Confirmation";
 
 function App() {
   const [spotifyPlaylistTracks, setSpotifyPlaylistTracks] = useState(null);
@@ -30,6 +31,12 @@ function App() {
               setSpotifyPlaylistTracks={setSpotifyPlaylistTracks}
               spotifyPlaylistTitle={spotifyPlaylistTitle}
             />
+          }
+        />
+        <Route
+          path="/confirmation"
+          element={
+            <Confirmation setSpotifyPlaylistTracks={setSpotifyPlaylistTracks} />
           }
         />
       </Routes>

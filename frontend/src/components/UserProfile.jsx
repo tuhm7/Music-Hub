@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const UserProfile = ({ username, setUsername }) => {
   const navigator = useNavigate();
@@ -8,6 +9,17 @@ const UserProfile = ({ username, setUsername }) => {
 
   const handleClick = () => {
     setShowLogOut(!showLogOut);
+  };
+
+  const handleLogout = () => {
+    fetch("http://localhost:4000/auth/logout", {
+      mode: "cors",
+      credentials: "include",
+    }).then((res) => console.log("hi", res));
+    setUsername("");
+    setProfilePicture("");
+    setShowLogOut(false);
+    navigator("/");
   };
 
   useEffect(() => {
@@ -28,10 +40,10 @@ const UserProfile = ({ username, setUsername }) => {
       });
   }, []);
   return (
-    <>
+    <div className="absolute right-0 mr-3 mt-2 ">
       {username && (
         <div
-          className="border flex px-3 py-1 items-center space-x-2 text-white absolute right-0 mr-3 mt-2 rounded-lg cursor-pointer"
+          className="border flex px-3 py-1 items-center space-x-2 text-white rounded-lg cursor-pointer"
           onClick={handleClick}
         >
           {profilePicture && (
@@ -44,7 +56,16 @@ const UserProfile = ({ username, setUsername }) => {
           <div>{username}</div>
         </div>
       )}
-    </>
+      {showLogOut && (
+        <div
+          className="text-white mt-2 w-fit py-1 absolute right-0 border rounded-lg cursor-pointer text-right px-2"
+          onClick={handleLogout}
+        >
+          Logout {"  "}
+          <LogoutIcon />
+        </div>
+      )}
+    </div>
   );
 };
 

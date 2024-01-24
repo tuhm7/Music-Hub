@@ -6,4 +6,6 @@ router.get("/login", authController.login);
 
 router.get("/callback", authController.callback);
 
+router.get("/profile", authController.sendLoginStatus);
+
 module.exports = router;

@@ -15,7 +15,7 @@ const UserProfile = ({ username, setUsername }) => {
     fetch("http://localhost:4000/auth/logout", {
       mode: "cors",
       credentials: "include",
-    }).then((res) => console.log("hi", res));
+    });
     setUsername("");
     setProfilePicture("");
     setShowLogOut(false);
@@ -28,7 +28,6 @@ const UserProfile = ({ username, setUsername }) => {
       credentials: "include",
     })
       .then((res) => {
-        console.log(res.status);
         if (res.status === 400) {
           navigator("/");
         }

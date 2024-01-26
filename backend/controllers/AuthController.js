@@ -74,7 +74,7 @@ function callback(req, res) {
             req.session.spotifyID = data["id"];
             req.session.save();
           });
-        res.redirect("http://localhost:5173/transfer?redirect=true");
+        res.redirect("http://localhost:5173/transfer?");
       } else {
         res.redirect(
           "/#" +
@@ -87,6 +87,10 @@ function callback(req, res) {
   }
 }
 
+function logout(req, res) {
+  req.session.destroy();
+  console.log("logouted");
+}
 function sendLoginStatus(req, res) {
   const options = {
     headers: { Authorization: "Bearer " + req.session.token },
@@ -110,4 +114,5 @@ module.exports = {
   login,
   callback,
   sendLoginStatus,
+  logout,
 };

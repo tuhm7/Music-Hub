@@ -39,7 +39,7 @@ const AddPlaylistPopup = ({
         new URLSearchParams({
           appleurl: url,
         }),
-      { credentials: "include" }
+      { mode: "cors", credentials: "include" }
     )
       .then((res) => res.json())
       .then((data) => {

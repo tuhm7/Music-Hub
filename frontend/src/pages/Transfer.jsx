@@ -11,7 +11,6 @@ const Transfer = ({
 }) => {
   const [showPopup, setShowPopup] = useState(false);
 
-  const navigate = useNavigate();
   // navigate once the Spotiy playlist is updated
 
   useEffect(() => {
@@ -19,6 +18,8 @@ const Transfer = ({
       navigate("/playlist");
     }
   }, spotifyPlaylistTracks);
+
+  const navigate = useNavigate();
 
   function handleSpotifyTrackState(playlist) {
     setSpotifyPlaylistTracks(playlist);

@@ -12,6 +12,6 @@ module.exports = session({
   cookie: {
     secure: false, // change to true in production
     httpOnly: true,
-    maxAge: 1000 * 5 * 60,
+    maxAge: 1000 * 60 * 60, // one hour
   },
 });

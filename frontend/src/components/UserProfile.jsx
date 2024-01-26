@@ -13,7 +13,7 @@ const UserProfile = ({ username, setUsername }) => {
   };
 
   const handleLogout = () => {
-    fetch(process.env.BACKEND_HOST + "/auth/logout", {
+    fetch(backendHost + "/auth/logout", {
       mode: "cors",
       credentials: "include",
     });

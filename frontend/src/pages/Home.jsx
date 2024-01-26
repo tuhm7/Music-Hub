@@ -1,5 +1,7 @@
 import React from "react";
 import headphones from "../images/headphones.jpg";
+import { backendHost } from "../../constants";
+
 const Home = () => {
   return (
     <div className="text-beige">
@@ -8,7 +10,7 @@ const Home = () => {
         <div className="text-8xl">music hub</div>
         <button
           onClick={() => {
-            window.location.href = "http://localhost:4000/auth/login";
+            window.location.href = backendHost + "/auth/login";
           }}
           className="border border-white px-3 py-1 mt-4 rounded-xl hover:bg-pink cursor-pointer"
         >

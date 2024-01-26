@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { backendHost } from "../../constants";
 
 const UserProfile = ({ username, setUsername }) => {
   const navigator = useNavigate();
@@ -12,7 +13,7 @@ const UserProfile = ({ username, setUsername }) => {
   };
 
   const handleLogout = () => {
-    fetch("http://localhost:4000/auth/logout", {
+    fetch(process.env.BACKEND_HOST + "/auth/logout", {
       mode: "cors",
       credentials: "include",
     });
@@ -23,7 +24,7 @@ const UserProfile = ({ username, setUsername }) => {
   };
 
   useEffect(() => {
-    fetch("http://localhost:4000/auth/profile", {
+    fetch(backendHost + "/auth/profile", {
       mode: "cors",
       credentials: "include",
     })

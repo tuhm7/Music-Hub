@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import example1 from "../images/appleExample1.png";
 import example2 from "../images/appleExample2.png";
 import { CirclesWithBar } from "react-loader-spinner";
+import { backendHost } from "../../constants";
 
 const AddPlaylistPopup = ({
   updateSpotifyTracks,
@@ -35,11 +36,12 @@ const AddPlaylistPopup = ({
   // gets playlist data from Apple Music from the backend
   const getPlaylist = () => {
     fetch(
-      "http://localhost:4000/transfer/apple?" +
+      backendHost +
+        "/transfer/apple?" +
         new URLSearchParams({
           appleurl: url,
         }),
-      { credentials: "include" }
+      { mode: "cors", credentials: "include" }
     )
       .then((res) => res.json())
       .then((data) => {
@@ -51,7 +53,7 @@ const AddPlaylistPopup = ({
   /* method for getting Spotify object where each element containing song title, artist name,
   Spotify uri, and album url */
   const getSpotifyObject = () => {
-    fetch("http://localhost:4000/spotify/songs", {
+    fetch(backendHost + "/spotify/songs", {
       method: "POST",
       mode: "cors",
       credentials: "include",

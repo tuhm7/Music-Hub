@@ -28,7 +28,9 @@ async function getSong(title, access_token) {
   )
     .then((res) => res.json())
     .then((data) => {
+      console.log(data);
       songData = data["tracks"]["items"][0];
+      console.log(songData);
       return {
         title: songData["name"],
         artist: songData["artists"][0]["name"],

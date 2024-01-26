@@ -4,13 +4,16 @@ import Home from "./pages/Home";
 import Transfer from "./pages/Transfer";
 import Playlist from "./pages/Playlist";
 import Confirmation from "./pages/Confirmation";
+import UserProfile from "./components/UserProfile";
 
 function App() {
+  const [username, setUsername] = useState(false);
   const [spotifyPlaylistTracks, setSpotifyPlaylistTracks] = useState(null);
   const [spotifyPlaylistTitle, setSpotifyPlaylistTitle] = useState(null);
 
   return (
     <div className="font-primary">
+      <UserProfile username={username} setUsername={setUsername} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route

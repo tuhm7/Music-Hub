@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CirclesWithBar } from "react-loader-spinner";
+import { backendHost } from "../../constants";
 
 // creates empty playlist in Spotify and adds songs to it
 const CreateSpotifyPlaylistButton = ({ tracks, title }) => {
@@ -8,7 +9,7 @@ const CreateSpotifyPlaylistButton = ({ tracks, title }) => {
   const [showSpinner, setShowSpinner] = useState(false);
 
   const handleCreatePlaylist = () => {
-    fetch("http://localhost:4000/spotify/spotify-playlist?title=" + title, {
+    fetch(backendHost + "/spotify/spotify-playlist?title=" + title, {
       method: "POST",
       mode: "cors",
       credentials: "include",
